@@ -1,0 +1,116 @@
+---
+title: "Comparing Two Means"
+author: "Lucy Harlow"
+date: "12/11/2020"
+output: pdf_document
+---
+
+
+## One sample test
+
+Below are some descriptive statistics and plots for the data from a study of reaction time (milliseconds) for a sample of 20 young people on an information processing task:
+
+```{r}
+
+reactiontime <- c(250, 260, 260, 264, 266, 266, 267, 269, 270, 274, 276, 276, 277,
+                  279, 279, 279, 281, 282, 282, 289)
+summary(reactiontime)
+sd(reactiontime)
+plot(reactiontime)
+hist(reactiontime, breaks = 7)
+boxplot(reactiontime)
+
+```
+
+A one-sample t-test indicated that in a sample of 20 young people’s reaction times on an information processing task, reaction times ($M = 272$, $SD = 9.52$) were significantly different from the prior estimated population mean of $267.5$; $t = 2.25$, $p = 0.036$.
+
+```{r}
+
+
+results <- t.test(reactiontime, mu = 267.5)
+results
+
+```
+
+
+## Independent Samples Test
+
+Thirty-three students have taken a statistics module. In addition to the lectures, some students are given additional support by Clarence, and the rest are supported by Zebedee. The dataset with the end of module exam grades is in the data file “stats_module_grades.csv”.
+
+```{r}
+grades <- read.csv("stats_module_grades.csv")
+summary(grades)
+grades
+```
+
+You are interested in whether Clarence or Zebedee provides better additional support. 
+
+$H_0\colon \mu_1 = \mu_2$
+
+$H_a\colon \mu_1 \neq \mu_2$
+
+### Student's t-test:
+
+```{r}
+t.test(grade ~ tutor, data = grades, var.equal = TRUE)
+```
+
+### Welch's t-test:
+
+```{r}
+t.test(grade ~ tutor, data = grades)
+```
+
+### Mann-Whitney U Test:
+
+```{r}
+wilcox.test(grade ~ tutor, data = grades)
+```
+
+
+## Paired Samples Test
+
+In a health psychology experiment, 24 women aged 40-60 are randomly selected to receive an alcohol prevention intervention. Their past-week alcohol consumption (units of alcohol) is measured at baseline (pre-intervention) and again at four week follow-up (post-intervention). 
+
+My null hypothesis $H_0$ is that the intervention will have no effect, and the means of the pre-intervention data and the post-intervention data will be the same. My alternative hypothesis $H_a$ is that the intervention will have an effect, and the means will be different.
+
+
+```{r}
+alcohol <- read.csv("alcohol_experiment.csv")
+t.test(alcohol$units_t1, alcohol$units_t2, paired = TRUE)
+```
+
+
+NB: a one sample test on the *differences* between each pair of observations is exactly equivalent to a paired samples test. The mean of the differences is equal to the difference of the means.
+
+```{r}
+t.test(alcohol$units_t1 - alcohol$units_t2)
+```
+
+A paired t-test assumes that the data are normally distributed, so I check this using both a Q-Q plot and a Shapiro-Wilk test. The null hypothesis in a Shapiro-Wilk test is that the data are normally distributed, and the high p-values of the test for each set of data indicate a failure to reject this null hypothesis:
+
+```{r}
+
+shapiro.test(alcohol$units_t1)
+shapiro.test(alcohol$units_t2)
+```
+
+
+A normal Q-Q plot plots the data (Sample Quantiles) against a standard normal distribution (Theoretical Quantiles). First, I make a Q-Q plot of the pre-intervention data:
+
+```{r}
+
+qqnorm(alcohol$units_t1)
+qqline(alcohol$units_t1)
+```
+
+Next, I make a Q-Q plot of the post-intervention data:
+
+```{r}
+
+qqnorm(alcohol$units_t2)
+qqline(alcohol$units_t2)
+
+```
+
+Along with the Shapiro-Wilk test, this suggests that the data are normally distributed.

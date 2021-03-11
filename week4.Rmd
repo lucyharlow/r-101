@@ -1,0 +1,31 @@
+---
+title: "PSYC7005 Week 4"
+author: "Lucy Harlow"
+date: "12/10/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## A Statistics Project for PSYC7005
+
+I decided to supplement my learning of jamovi by attempting the worksheet exercises in R as well. My main source for learning R continues to be swirl, but working on these exercises will support this learning with practical experiences. It took quite a while to figure out how to use ggplots, and I didn't quite get the boxplot to show what I wanted---depicting the points proved challenging, so I'll come back to this later when I understand things more fully.
+
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(ggplot2)
+winningmargins <- read.csv("aflsmall_margins.csv", header = TRUE)
+hist(winningmargins$afl.margins, main = "Team Winning Margins", 
+     xlab = "Team Winning Margins", breaks = 20, freq = FALSE)
+ggplot() +
+  geom_boxplot(data = winningmargins,
+               aes(x = afl.margins, y = ""),
+  ) + labs(x = "Team Winning Margins", y = "") + coord_flip() +
+  geom_point(mapping = NULL)
+
+```
+
